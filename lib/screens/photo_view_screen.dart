@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../models/photo.dart';
 import '../models/group.dart';
 import '../providers/app_state.dart';
-import '../widgets/import_fab.dart';
 
 class PhotoViewScreen extends StatefulWidget {
   final Photo photo;
@@ -90,7 +89,35 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
       body: Center(
         child: InteractiveViewer(child: Image.file(File(_currentImagePath))),
       ),
-      floatingActionButton: const ImportFab(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _confirmDelete(context),
+        backgroundColor: Colors.red,
+        child: const Icon(Icons.delete),
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Photo?'),
+        content: const Text('This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<AppState>().deletePhoto(widget.photo, widget.group);
+              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Go back to group screen
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }
