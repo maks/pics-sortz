@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/group.dart';
 import '../models/photo.dart';
 import '../providers/app_state.dart';
+import '../widgets/import_fab.dart';
 import 'photo_view_screen.dart';
 
 class GroupScreen extends StatelessWidget {
@@ -31,7 +32,7 @@ class GroupScreen extends StatelessWidget {
           // Re-fetch group from state to ensure updates (though Hive object should update)
           // But HiveList might need care.
           final photos = group.photos ?? [];
-          
+
           if (photos.isEmpty) {
             return const Center(child: Text('No photos in this group.'));
           }
@@ -52,6 +53,7 @@ class GroupScreen extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: const ImportFab(),
     );
   }
 
@@ -81,7 +83,9 @@ class GroupScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Group?'),
-        content: const Text('This will delete the group and remove photos from the app.'),
+        content: const Text(
+          'This will delete the group and remove photos from the app.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

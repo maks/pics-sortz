@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/photo.dart';
 import '../models/group.dart';
 import '../providers/app_state.dart';
+import '../widgets/import_fab.dart';
 
 class PhotoViewScreen extends StatefulWidget {
   final Photo photo;
@@ -36,9 +37,7 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: false,
         ),
-        IOSUiSettings(
-          title: 'Edit Photo',
-        ),
+        IOSUiSettings(title: 'Edit Photo'),
       ],
     );
 
@@ -46,20 +45,20 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
       // In a real app, we might want to save this as a new file or overwrite.
       // For simplicity, we'll overwrite the path in the model if the file is different,
       // or just update the view.
-      // Since ImageCropper saves to a cache/temp file, we should probably move it 
+      // Since ImageCropper saves to a cache/temp file, we should probably move it
       // or just use it.
-      
+
       // Let's update the photo model with the new path
       // But wait, Photo object is HiveObject.
       // We need to update it via AppState or directly.
-      
+
       // NOTE: Modifying the file path in the model.
       // Ideally we should copy it to our app storage.
-      
+
       setState(() {
         _currentImagePath = croppedFile.path;
       });
-      
+
       // Update model
       widget.photo.path = croppedFile.path;
       await widget.photo.save();
@@ -72,15 +71,15 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
       appBar: AppBar(
         title: Text(widget.photo.label),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.crop),
-            onPressed: _cropImage,
-          ),
+          IconButton(icon: const Icon(Icons.crop), onPressed: _cropImage),
           IconButton(
             icon: const Icon(Icons.image),
             tooltip: 'Set as Group Cover',
             onPressed: () {
-              context.read<AppState>().setGroupCoverImage(widget.group, _currentImagePath);
+              context.read<AppState>().setGroupCoverImage(
+                widget.group,
+                _currentImagePath,
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Group cover updated')),
               );
@@ -89,10 +88,9 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
         ],
       ),
       body: Center(
-        child: InteractiveViewer(
-          child: Image.file(File(_currentImagePath)),
-        ),
+        child: InteractiveViewer(child: Image.file(File(_currentImagePath))),
       ),
+      floatingActionButton: const ImportFab(),
     );
   }
 }

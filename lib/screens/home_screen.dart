@@ -1,27 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
+
 import '../providers/app_state.dart';
 import '../models/group.dart';
 import 'group_screen.dart';
 import 'settings_screen.dart';
-import '../widgets/import_dialog.dart';
+import '../widgets/import_fab.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  Future<void> _importImage(BuildContext context) async {
-    final picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    
-    if (image != null && context.mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => ImportDialog(imagePath: image.path),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +32,10 @@ class HomeScreen extends StatelessWidget {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.blueGrey),
-              child: Text('Settings', style: TextStyle(color: Colors.white, fontSize: 24)),
+              child: Text(
+                'Settings',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
             ),
             ListTile(
               onTap: () {
@@ -82,10 +73,7 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _importImage(context),
-        child: const Icon(Icons.add_a_photo),
-      ),
+      floatingActionButton: const ImportFab(),
     );
   }
 }
@@ -116,10 +104,12 @@ class _GroupCard extends StatelessWidget {
                   ? Image.file(
                       File(group.coverImagePath!),
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => 
+                      errorBuilder: (context, error, stackTrace) =>
                           const Center(child: Icon(Icons.broken_image)),
                     )
-                  : const Center(child: Icon(Icons.folder, size: 48, color: Colors.grey)),
+                  : const Center(
+                      child: Icon(Icons.folder, size: 48, color: Colors.grey),
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
