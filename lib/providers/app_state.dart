@@ -94,6 +94,36 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> movePhoto(
+    Photo photo,
+    Group sourceGroup,
+    Group targetGroup,
+  ) async {
+    // Remove from source group
+    sourceGroup.photos?.remove(photo);
+
+    // If this was the cover image of source group, update it
+    if (sourceGroup.coverImagePath == photo.path) {
+      if (sourceGroup.photos != null && sourceGroup.photos!.isNotEmpty) {
+        sourceGroup.coverImagePath = sourceGroup.photos!.first.path;
+      } else {
+        sourceGroup.coverImagePath = null;
+      }
+      await sourceGroup.save();
+    }
+
+    // Add to target group
+    targetGroup.photos?.add(photo);
+
+    // If target group has no cover, set this as cover
+    if (targetGroup.coverImagePath == null) {
+      targetGroup.coverImagePath = photo.path;
+    }
+
+    await targetGroup.save();
+    notifyListeners();
+  }
+
   Future<void> renamePhoto(Photo photo, String newLabel) async {
     photo.label = newLabel;
     await photo.save();

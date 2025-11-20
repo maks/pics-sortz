@@ -82,6 +82,11 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
         actions: [
           IconButton(icon: const Icon(Icons.crop), onPressed: _cropImage),
           IconButton(
+            icon: const Icon(Icons.drive_file_move),
+            tooltip: 'Move to Group',
+            onPressed: () => _showMoveDialog(context),
+          ),
+          IconButton(
             icon: const Icon(Icons.image),
             tooltip: 'Set as Group Cover',
             onPressed: () {
@@ -159,6 +164,54 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
               }
             },
             child: const Text('Rename'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMoveDialog(BuildContext context) {
+    final appState = context.read<AppState>();
+    final availableGroups = appState.groups
+        .where((g) => g.id != widget.group.id)
+        .toList();
+
+    if (availableGroups.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No other groups available')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Move to Group'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: availableGroups.length,
+            itemBuilder: (context, index) {
+              final group = availableGroups[index];
+              return ListTile(
+                title: Text(group.name),
+                onTap: () {
+                  appState.movePhoto(widget.photo, widget.group, group);
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Go back to group screen
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Moved to ${group.name}')),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
         ],
       ),
