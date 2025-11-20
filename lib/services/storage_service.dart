@@ -1,5 +1,4 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import '../models/photo.dart';
 import '../models/group.dart';
 
@@ -9,7 +8,7 @@ class StorageService {
 
   Future<void> init() async {
     await Hive.initFlutter();
-    
+
     Hive.registerAdapter(PhotoAdapter());
     Hive.registerAdapter(GroupAdapter());
 

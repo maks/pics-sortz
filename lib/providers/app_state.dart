@@ -47,9 +47,7 @@ class AppState extends ChangeNotifier {
     group.photos?.add(photo);
 
     // Set cover image if not set
-    if (group.coverImagePath == null) {
-      group.coverImagePath = filePath;
-    }
+    group.coverImagePath ??= filePath;
 
     await group.save();
     notifyListeners();
@@ -116,9 +114,7 @@ class AppState extends ChangeNotifier {
     targetGroup.photos?.add(photo);
 
     // If target group has no cover, set this as cover
-    if (targetGroup.coverImagePath == null) {
-      targetGroup.coverImagePath = photo.path;
-    }
+    targetGroup.coverImagePath ??= photo.path;
 
     await targetGroup.save();
     notifyListeners();
