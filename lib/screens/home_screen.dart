@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sorted Pics'),
+        title: const Text('Pics Sortz'),
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu),

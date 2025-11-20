@@ -10,7 +10,7 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: const Text('About Sorted Pics'),
+            title: const Text('About Pics Sortz'),
             subtitle: const Text('Version 1.0.0'),
             leading: const Icon(Icons.info),
           ),
