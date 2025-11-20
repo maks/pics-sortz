@@ -88,6 +88,12 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> renameGroup(Group group, String newName) async {
+    group.name = newName;
+    await group.save();
+    notifyListeners();
+  }
+
   Future<void> renamePhoto(Photo photo, String newLabel) async {
     photo.label = newLabel;
     await photo.save();

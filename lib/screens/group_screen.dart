@@ -16,7 +16,19 @@ class GroupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(group.name),
+        title: Consumer<AppState>(
+          builder: (context, appState, child) => GestureDetector(
+            onTap: () => _showRenameDialog(context),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(child: Text(group.name)),
+                const SizedBox(width: 8),
+                const Icon(Icons.edit, size: 16),
+              ],
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
@@ -98,6 +110,36 @@ class GroupScreen extends StatelessWidget {
               Navigator.pop(context); // Go back to home
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showRenameDialog(BuildContext context) {
+    final controller = TextEditingController(text: group.name);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rename Group'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(labelText: 'New Name'),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                context.read<AppState>().renameGroup(group, controller.text);
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Rename'),
           ),
         ],
       ),
