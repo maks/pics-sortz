@@ -68,7 +68,17 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.photo.label),
+        title: GestureDetector(
+          onTap: () => _showRenameDialog(context),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(child: Text(widget.photo.label)),
+              const SizedBox(width: 8),
+              const Icon(Icons.edit, size: 16),
+            ],
+          ),
+        ),
         actions: [
           IconButton(icon: const Icon(Icons.crop), onPressed: _cropImage),
           IconButton(
@@ -115,6 +125,40 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
               Navigator.pop(context); // Go back to group screen
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showRenameDialog(BuildContext context) {
+    final controller = TextEditingController(text: widget.photo.label);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rename Photo'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(labelText: 'New Label'),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                context.read<AppState>().renamePhoto(
+                  widget.photo,
+                  controller.text,
+                );
+                setState(() {}); // Refresh UI to show new name
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Rename'),
           ),
         ],
       ),
