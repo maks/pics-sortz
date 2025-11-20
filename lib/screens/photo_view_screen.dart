@@ -35,8 +35,9 @@ class _PhotoViewScreenState extends State<PhotoViewScreen> {
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: false,
+          hideBottomControls: false,
         ),
-        IOSUiSettings(title: 'Edit Photo'),
+        IOSUiSettings(title: 'Edit Photo', rotateButtonsHidden: false),
       ],
     );
 
